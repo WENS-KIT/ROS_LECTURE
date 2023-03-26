@@ -1,9 +1,24 @@
 import rospy
-import keyboard
+import sys, select, termios, tty
+
+
 from geometry_msgs.msg import PoseStamped
 from mavros_msgs.msg import State
 from mavros_msgs.srv import CommandBool, CommandBoolRequest, SetMode, SetModeRequest
 
+settings = termios.tcgetattr(sys.stdin)
+
+def getKey(timeout):
+    old_settings = termios.tcgetattr(sys.stdin)
+    try:
+        tty.setcbreak(sys.stdin.fileno())
+
+        if select.select([sys.stdin], [], [], timeout) == ([sys.stdin], [], []):
+            return sys.stdin.read(1)
+        else:
+            return None
+    finally:
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
 class PXController :
     def __init__(self):
@@ -108,35 +123,38 @@ class PXController :
         rospy.loginfo("Keyboard Controll enabled")
 
         while not rospy.is_shutdown():
-
-            if keyboard.is_pressed('w'):
-                rospy.loginfo("Move Front")
+            
+            key = getKey(0.1)
+            
+            if key == 'w':
+                rospy.loginfo("input : w")
                 self.pose.pose.position.x += 0.5
-            elif keyboard.is_pressed('x'):
-                rospy.loginfo("Move Back")
+            elif key == 'x':
+                rospy.loginfo("input : x")
                 self.pose.pose.position.x -= 0.5
-            elif keyboard.is_pressed('a'):
-                rospy.loginfo("Move Left")
+            elif key == 'a':
+                rospy.loginfo("input : a")
                 self.pose.pose.position.y += 0.5
-            elif keyboard.is_pressed('d'):
-                rospy.loginfo("Move Right")
+            elif key == 'd':
+                rospy.loginfo("input : d")
                 self.pose.pose.position.y -= 0.5
-            elif keyboard.is_pressed('s'):
-                rospy.loginfo("Stop")
+            elif key == 's':
+                rospy.loginfo("input : s")
                 self.pose.pose.position = self.current_pose.pose.position
-
-            elif keyboard.is_pressed('u'):
-                rospy.loginfo("Move Up")
+            
+            elif key == 'u':
+                rospy.loginfo("input : u")
                 self.pose.pose.position.z += 0.5
-            elif keyboard.is_pressed('j'):
-                rospy.loginfo("Move Down")
+            elif key == 'j':
+                rospy.loginfo("input : j")
                 self.pose.pose.position.z -= 0.5
-
-            elif keyboard.is_pressed('l'):
+            
+            elif key == 'l':
+                rospy.loginfo("input : l")
                 self.land()
                 break
-
-            elif keyboard.is_pressed('q'):
+                
+            elif key == 'q':
                 rospy.loginfo("Emergence Quit")
                 rospy.signal_shutdown(-1)
                 break
