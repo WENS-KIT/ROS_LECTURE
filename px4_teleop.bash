@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python px4_teleop.py
+python ~/lecture_file/px4_teleop.py
