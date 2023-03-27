@@ -127,30 +127,34 @@ class PXController :
             key = getKey(0.1)
             
             if key == 'w':
-                rospy.loginfo("input : w")
+                rospy.loginfo("[Input : w] Move front")
                 self.pose.pose.position.x += 0.5
             elif key == 'x':
-                rospy.loginfo("input : x")
+                rospy.loginfo("[Input : x] Move back")
                 self.pose.pose.position.x -= 0.5
             elif key == 'a':
-                rospy.loginfo("input : a")
+                rospy.loginfo("[Input : a] Move left")
                 self.pose.pose.position.y += 0.5
             elif key == 'd':
-                rospy.loginfo("input : d")
+                rospy.loginfo("[Input : d] Move right")
                 self.pose.pose.position.y -= 0.5
             elif key == 's':
-                rospy.loginfo("input : s")
+                rospy.loginfo("[Input : s] Stop")
                 self.pose.pose.position = self.current_pose.pose.position
             
             elif key == 'u':
-                rospy.loginfo("input : u")
+                rospy.loginfo("[Input : u] Move up")
                 self.pose.pose.position.z += 0.5
             elif key == 'j':
-                rospy.loginfo("input : j")
+                rospy.loginfo("[Input : j] Move down")
                 self.pose.pose.position.z -= 0.5
             
+            elif key == 't':
+                rospy.loginfo("[Input : t] Takeoff")
+                self.takeoff(2.0)
+
             elif key == 'l':
-                rospy.loginfo("input : l")
+                rospy.loginfo("[Input : l] Land")
                 self.land()
                 break
                 
